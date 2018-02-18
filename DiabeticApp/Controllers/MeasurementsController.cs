@@ -29,7 +29,7 @@ namespace DiabeticApp.Controllers
         {
             List<MeasurementViewModel> model = null;
             var token = GetToken();
-            var response = await _measurementsClient.GetHttpResponseUsingToken(token);
+            var response = await _measurementsClient.GetAllMeasurementWithHttpResponseUsingToken(token);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
                 ClearAndAddModelError("No measurements to show.");
@@ -56,7 +56,7 @@ namespace DiabeticApp.Controllers
         public async Task<ActionResult> AddMeasurement(MeasurementViewModel model)
         {
             var token = GetToken();
-            var response = await _measurementsClient.GetHttpResponseUsingToken(model, token);
+            var response = await _measurementsClient.AddMeasurementAndGetHttpResponseUsingToken(model, token);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("AllMeasurements", "Measurements");
@@ -64,6 +64,24 @@ namespace DiabeticApp.Controllers
 
             return View(model);
         }
+
+        //public ActionResult DeleteMeasurement()
+        //{
+        //    return RedirectToAction("AllMeasurements", "Measurements");
+        //}
+
+        public async Task<ActionResult> DeleteMeasurement(int id)
+        {
+            var token = GetToken();
+            var response = await _measurementsClient.DeleteMeasurementAndGetHttpResponse(id, token);
+            if (!response.IsSuccessStatusCode)
+            {
+                ClearAndAddModelError("A problem occurred, please try again later");
+
+            }
+            return RedirectToAction("AllMeasurements", "Measurements");
+        }
+
 
         private string GetToken()
         {

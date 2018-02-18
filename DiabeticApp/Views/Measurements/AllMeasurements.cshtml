@@ -4,45 +4,62 @@
 }
 
 <h2>All Your measurements</h2>
-@using (Html.BeginForm("AllMeasurements", "Measurements", FormMethod.Get, new {@class = "form-horizontal", role = "form"}))
+@using (Html.BeginForm("AllMeasurements", "Measurements", FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
 {
-    
+
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>Id</th>
-            <th>Result</th>
-            <th>Description</th>
-            <th>Date</th>
-        </tr>
+            <tr>
+                <th>Result</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
         </thead>
         @if (Model != null)
         {
             <tbody>
-            @foreach (var element in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(m => element.Id)</td>
-                    <td>@Html.DisplayFor(m => element.Result)</td>
-                    <td>@Html.DisplayFor(m => element.Description)</td>
-                    <td>@Html.DisplayFor(m => element.Date)</td>                   
+                @foreach (var element in Model)
+                {
+                <tr id="MeasurementRow">
+                    <td id ="MeasurementColumn", style="font-size: 18px;">@Html.DisplayFor(m => element.Result)</td>
+                    <td id ="MeasurementColumn", style="font-size: 18px;">@Html.DisplayFor(m => element.Description)</td>
+                    <td id ="MeasurementColumn", style="font-size: 18px;">@Html.DisplayFor(m => element.Date)</td>                   
+                    <td><button class="btn btn-danger" id="ClickMe" type="button" onclick="DeleteMeasurement(@element.Id);">Delete</button></td>
                 </tr>
-            }
+                }
             </tbody>
         }
         else
         {
             <tbody>
-            <tr>
-                <td colspan="4" style="text-align: center; color: gray; font-size: 20px">No measurements to show.</td>
-            </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center; color: gray; font-size: 20px">No measurements to show.</td>
+                </tr>
             </tbody>
         }
     </table>
-    <div class="form-actions">
-        <button class="btn btn-success" type="button" 
-                onclick="location.href='@Url.Action("AddMeasurement", "Measurements")'">Add new</button>
-    </div>
-   
+        <button class="btn btn-success" type="button"
+                onclick="location.href='@Url.Action("AddMeasurement", "Measurements")'">
+            Add new
+        </button>
+
+    <script language="javascript" type="text/javascript">
+        function DeleteMeasurement(measurementId) {
+            if (confirm("Are you sure?"))
+            {
+                $.ajax({
+                    url: '@Url.Action("DeleteMeasurement", "Measurements")',
+                    data: { id : measurementId },
+                    success: function () {
+                       location.reload();
+                    }
+                    });
+            }
+            
+        }
+    </script>
+
 }
+
 
