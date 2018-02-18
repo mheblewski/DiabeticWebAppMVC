@@ -1,0 +1,44 @@
+﻿@model List<DiabeticApp.Models.MeasurementViewModel>
+@{
+    ViewBag.Title = "All Measurements";
+}
+
+<h2>All Your measurements</h2>
+@using (Html.BeginForm("AllMeasurements", "Measurements", FormMethod.Get, new {@class = "form-horizontal", role = "form"}))
+{
+    
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Result</th>
+            <th>Description</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+        <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(m => element.Id)</td>
+                    <td>@Html.DisplayFor(m => element.Result)</td>
+                    <td>@Html.DisplayFor(m => element.Description)</td>
+                    <td>@Html.DisplayFor(m => element.Date)</td>
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <tbody>
+        <tr>
+            <td colspan="4" style="text-align: center; color: gray; font-size: 20px">No measurements to show.</td>
+        </tr>
+        </tbody>
+    }
+    </table>
+   
+}
+
