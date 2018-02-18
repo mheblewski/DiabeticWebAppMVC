@@ -32,11 +32,22 @@ namespace DiabeticApp.ApiInfrastructure.Clients.Measurements
             return measurementsList;
         }
 
-        public async Task<HttpResponseMessage> GetHttpResponse(string token)
+        public async Task<HttpResponseMessage> GetHttpResponseUsingToken(string token)
         {
             AddTokenToAuthorizationHeader(token);
             var response = await _httpClient.GetAsync(measurementsUrl);
             return response;
+        }
+
+        public async Task<HttpResponseMessage> GetHttpResponseUsingToken(MeasurementViewModel model, string token)
+        {
+            AddTokenToAuthorizationHeader(token);
+            var myContent = JsonConvert.SerializeObject(model);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var result = await _httpClient.PostAsync(measurementsUrl, byteContent);
+            return result;
         }
 
         private void AddTokenToAuthorizationHeader(string token)

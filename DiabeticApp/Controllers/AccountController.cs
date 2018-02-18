@@ -39,21 +39,31 @@ namespace DiabeticApp.Controllers
         {
             if (model.Username == null || model.Password == null)
             {
-                ModelState.Clear();
-                ModelState.AddModelError("", "Please enter username and password.");
+                ClearAndAddModelError("Please enter username and password.");
                 return View(model);
             }
             var response = await _authenticationClient.GetHttpResponse(model);
             if (response.IsSuccessStatusCode)
             {
                 var tokenResponse = await _authenticationClient.GetTokenFromHttpResponse(response);
-                HttpContext.Session.SetString("Token", tokenResponse.AccessToken);
+                SetToken(tokenResponse.AccessToken);
                 return RedirectToAction("AllMeasurements", "Measurements");
             }
 
             ModelState.Clear();
             ModelState.AddModelError("", "The username or password is incorrect");
             return View(model);
+        }
+
+        private void SetToken(string token)
+        {
+            HttpContext.Session.SetString("Token", token);
+        }
+
+        private void ClearAndAddModelError(string message)
+        {
+            ModelState.Clear();
+            ModelState.AddModelError("", message);
         }
     }
 }

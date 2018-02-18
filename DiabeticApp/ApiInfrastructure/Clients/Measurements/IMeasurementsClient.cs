@@ -10,6 +10,7 @@ namespace DiabeticApp.ApiInfrastructure.Clients.Measurements
     public interface IMeasurementsClient
     {
         Task<List<MeasurementViewModel>> GetMeasurementsFromResponse(HttpResponseMessage response);
-        Task<HttpResponseMessage> GetHttpResponse(string token);
+        Task<HttpResponseMessage> GetHttpResponseUsingToken(string token);
+        Task<HttpResponseMessage> GetHttpResponseUsingToken(MeasurementViewModel model, string token);
     }
 }

@@ -28,12 +28,11 @@ namespace DiabeticApp.Controllers
         public async Task<ActionResult> AllMeasurements()
         {
             List<MeasurementViewModel> model = null;
-            var token = HttpContext.Session.GetString("Token");
-            var response = await _measurementsClient.GetHttpResponse(token);
+            var token = GetToken();
+            var response = await _measurementsClient.GetHttpResponseUsingToken(token);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                ModelState.Clear();
-                ModelState.AddModelError("", "No measurements to show.");
+                ClearAndAddModelError("No measurements to show.");
             }
             else if (response.IsSuccessStatusCode)
             {
@@ -41,11 +40,40 @@ namespace DiabeticApp.Controllers
             }
             else
             {
-                ModelState.Clear();
-                ModelState.AddModelError("", "Something wrong, try agin later.");
+                ClearAndAddModelError("Something wrong, try agin later.");
             }
 
             return View(model);
+        }
+
+        public ActionResult AddMeasurement()
+        {
+            var model = new MeasurementViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddMeasurement(MeasurementViewModel model)
+        {
+            var token = GetToken();
+            var response = await _measurementsClient.GetHttpResponseUsingToken(model, token);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("AllMeasurements", "Measurements");
+            }
+
+            return View(model);
+        }
+
+        private string GetToken()
+        {
+            return HttpContext.Session.GetString("Token");
+        }
+
+        private void ClearAndAddModelError(string message)
+        {
+            ModelState.Clear();
+            ModelState.AddModelError("", message);
         }
     }
 }
