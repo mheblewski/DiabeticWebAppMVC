@@ -65,11 +65,6 @@ namespace DiabeticApp.Controllers
             return View(model);
         }
 
-        //public ActionResult DeleteMeasurement()
-        //{
-        //    return RedirectToAction("AllMeasurements", "Measurements");
-        //}
-
         public async Task<ActionResult> DeleteMeasurement(int id)
         {
             var token = GetToken();
